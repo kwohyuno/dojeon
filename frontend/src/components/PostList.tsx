@@ -11,9 +11,14 @@ interface Post {
   createdAt: string;
   viewCount: number;
   likeCount: number;
+  concertId?: number;
 }
 
-const PostList: React.FC = () => {
+interface PostListProps {
+  selectedConcertId?: number | null;
+}
+
+const PostList: React.FC<PostListProps> = ({ selectedConcertId }) => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,12 +44,18 @@ const PostList: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [selectedConcertId]);
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/api/posts');
+      let url = 'http://localhost:8080/api/posts';
+      
+      if (selectedConcertId) {
+        url = `http://localhost:8080/api/posts/concert/${selectedConcertId}`;
+      }
+      
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
@@ -79,9 +90,6 @@ const PostList: React.FC = () => {
 
   return (
     <div className="post-list-container">
-      <div className="post-list-header">
-        <h1>Dojeon Community</h1>
-      </div>
 
       <div className="post-list">
         {posts.length === 0 ? (

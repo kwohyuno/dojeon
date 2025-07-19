@@ -25,6 +25,13 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
     
+    // Get posts by concert ID
+    @GetMapping("/concert/{concertId}")
+    public ResponseEntity<List<Post>> getPostsByConcertId(@PathVariable Long concertId) {
+        List<Post> posts = postService.getPostsByConcertId(concertId);
+        return ResponseEntity.ok(posts);
+    }
+    
     // Get post by ID
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {

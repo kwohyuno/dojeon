@@ -142,6 +142,12 @@
   cursor: not-allowed;
 }
 
+select.form-input option {
+  background: #2c3e50;
+  color: white;
+  padding: 8px;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

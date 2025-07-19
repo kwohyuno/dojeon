@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jinImage from '../jin.jpeg';
 import './Write.css';
@@ -7,14 +7,39 @@ interface PostRequest {
   title: string;
   content: string;
   author: string;
+  concertId?: number;
+}
+
+interface Concert {
+  id: number;
+  name: string;
+  artist: string;
 }
 
 const Write: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [selectedConcertId, setSelectedConcertId] = useState<number | null>(null);
+  const [concerts, setConcerts] = useState<Concert[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchConcerts();
+  }, []);
+
+  const fetchConcerts = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/concerts');
+      if (response.ok) {
+        const data = await response.json();
+        setConcerts(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch concerts:', error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +57,8 @@ const Write: React.FC = () => {
       const postData: PostRequest = {
         title: title.trim(),
         content: content.trim(),
-        author: userEmail
+        author: userEmail,
+        concertId: selectedConcertId || undefined
       };
 
       const response = await fetch('http://localhost:8080/api/posts', {
@@ -109,6 +135,24 @@ const Write: React.FC = () => {
                 required
                 disabled={isSubmitting}
               />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="concert" className="form-label">Concert (Optional)</label>
+              <select
+                id="concert"
+                value={selectedConcertId || ''}
+                onChange={(e) => setSelectedConcertId(e.target.value ? parseInt(e.target.value) : null)}
+                className="form-input"
+                disabled={isSubmitting}
+              >
+                <option value="">Select a concert (optional)</option>
+                {concerts.map((concert) => (
+                  <option key={concert.id} value={concert.id}>
+                    {concert.name} - {concert.artist}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="form-group">

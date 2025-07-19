@@ -20,6 +20,11 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedAtDesc();
     }
     
+    // Get posts by concert ID
+    public List<Post> getPostsByConcertId(Long concertId) {
+        return postRepository.findByConcertIdOrderByCreatedAtDesc(concertId);
+    }
+    
     // Get post by ID
     public Optional<Post> getPostById(Long id) {
         return postRepository.findById(id);

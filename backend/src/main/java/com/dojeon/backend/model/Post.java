@@ -32,6 +32,9 @@ public class Post {
     @Column(name = "like_count", nullable = false)
     private Integer likeCount = 0;
     
+    @Column(name = "concert_id")
+    private Long concertId;
+    
     // Default constructor
     public Post() {
         this.createdAt = LocalDateTime.now();
@@ -39,11 +42,12 @@ public class Post {
     }
     
     // Constructor with required fields
-    public Post(String title, String content, String author) {
+    public Post(String title, String content, String author, Long concertId) {
         this();
         this.title = title;
         this.content = content;
         this.author = author;
+        this.concertId = concertId;
     }
     
     // Getters and Setters
@@ -109,6 +113,14 @@ public class Post {
     
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
+    }
+    
+    public Long getConcertId() {
+        return concertId;
+    }
+    
+    public void setConcertId(Long concertId) {
+        this.concertId = concertId;
     }
     
     @PreUpdate
