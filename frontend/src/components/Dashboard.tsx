@@ -24,6 +24,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
   const [concerts, setConcerts] = useState<Concert[]>([]);
   const [loading, setLoading] = useState(false);
   const [todayVisitors, setTodayVisitors] = useState(0);
+  const userName = localStorage.getItem('userName');
 
   const [newConcert, setNewConcert] = useState({
     name: '',
@@ -97,6 +98,8 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
     navigate('/login');
   };
 
@@ -124,7 +127,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
         <div className="header-content">
           <h1>Dojeon</h1>
           <div className="user-info">
-            <span>Welcome, {userEmail}</span>
+            <span>Welcome, {userName || userEmail}</span>
             <button onClick={handleGoToMyPage} className="mypage-button">
               My Page
             </button>
