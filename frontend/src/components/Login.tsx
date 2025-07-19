@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import jinImage from '../jin.jpeg';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -26,8 +27,15 @@ const Login: React.FC = () => {
     }, 1000);
   };
 
+  const containerStyle = {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${jinImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat'
+  };
+
   return (
-    <div className="login-container">
+    <div className="login-container" style={containerStyle}>
       <div className="login-card">
         <div className="login-header">
           <h1>Welcome to Dojeon</h1>
