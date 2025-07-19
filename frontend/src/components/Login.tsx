@@ -112,13 +112,7 @@ const Login: React.FC = () => {
         
         <div className="login-footer">
           <p>Don't have an account? <Link to="/register" className="link">Sign up</Link></p>
-          <p><a href="/forgot-password">Forgot password?</a></p>
-        </div>
-        
-        <div className="demo-credentials">
-          <p><strong>Demo Credentials:</strong></p>
-          <p>Email: test@example.com</p>
-          <p>Password: password</p>
+          {/* <p><a href="/forgot-password">Forgot password?</a></p> */}
         </div>
       </div>
     </div>
