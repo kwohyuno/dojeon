@@ -3,18 +3,30 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './PostDetail.css';
 import jinImage from '../jin.jpeg';
 
+interface Comment {
+  id: number;
+  content: string;
+  author: string;
+  createdAt: string;
+  postId: number;
+}
+
 const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<any>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [commentLoading, setCommentLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const currentIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (currentIdRef.current !== id) {
       setPost(null);
+      setComments([]);
       setLoading(true);
       setError(null);
       currentIdRef.current = id || null;
@@ -61,8 +73,21 @@ const PostDetail: React.FC = () => {
       }
     };
 
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/comments/post/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setComments(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch comments:', err);
+      }
+    };
+
     if (id) {
       fetchPost();
+      fetchComments();
     }
 
     return () => {
@@ -98,6 +123,37 @@ const PostDetail: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to like post:', error);
+    }
+  };
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newComment.trim() || !post) return;
+
+    setCommentLoading(true);
+    try {
+      const userEmail = localStorage.getItem('userEmail') || 'Anonymous';
+      const response = await fetch('http://localhost:8080/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newComment.trim(),
+          author: userEmail,
+          postId: post.id
+        }),
+      });
+
+      if (response.ok) {
+        const createdComment = await response.json();
+        setComments(prev => [...prev, createdComment]);
+        setNewComment('');
+      }
+    } catch (error) {
+      console.error('Failed to create comment:', error);
+    } finally {
+      setCommentLoading(false);
     }
   };
 
@@ -142,6 +198,49 @@ const PostDetail: React.FC = () => {
           <button onClick={() => navigate('/dashboard')} className="back-button">
             ← Back to Dashboard
           </button>
+        </div>
+
+        {/* Comments Section */}
+        <div className="comments-section">
+          <h3 className="comments-title">💬 Comments ({comments.length})</h3>
+          
+          {/* Comment Form */}
+          <form onSubmit={handleCommentSubmit} className="comment-form">
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
+              className="comment-input"
+              rows={3}
+              disabled={commentLoading}
+            />
+            <button 
+              type="submit" 
+              className="comment-submit-btn"
+              disabled={commentLoading || !newComment.trim()}
+            >
+              {commentLoading ? 'Posting...' : 'Post Comment'}
+            </button>
+          </form>
+
+          {/* Comments List */}
+          <div className="comments-list">
+            {comments.length === 0 ? (
+              <p className="no-comments">No comments yet. Be the first to comment!</p>
+            ) : (
+              comments.map((comment) => (
+                <div key={comment.id} className="comment-item">
+                  <div className="comment-header">
+                    <span className="comment-author">{comment.author}</span>
+                    <span className="comment-date">
+                      {new Date(comment.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="comment-content">{comment.content}</div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
