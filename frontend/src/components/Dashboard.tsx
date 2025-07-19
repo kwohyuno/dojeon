@@ -23,6 +23,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [concerts, setConcerts] = useState<Concert[]>([]);
   const [loading, setLoading] = useState(false);
+  const [todayVisitors, setTodayVisitors] = useState(0);
 
   const [newConcert, setNewConcert] = useState({
     name: '',
@@ -34,6 +35,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
 
   useEffect(() => {
     fetchConcerts();
+    fetchTodayVisitors();
   }, []);
 
   const fetchConcerts = async () => {
@@ -45,6 +47,18 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
       }
     } catch (error) {
       console.error('Failed to fetch concerts:', error);
+    }
+  };
+
+  const fetchTodayVisitors = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/visitors/today');
+      if (response.ok) {
+        const data = await response.json();
+        setTodayVisitors(data.todayVisitors);
+      }
+    } catch (error) {
+      console.error('Failed to fetch today visitors:', error);
     }
   };
 
@@ -102,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
     minHeight: '100vh'
   };
 
-  const todayVisitors = 127;
+
 
   return (
     <div className="dashboard-container" style={containerStyle}>

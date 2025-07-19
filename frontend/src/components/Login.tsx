@@ -15,10 +15,24 @@ const Login: React.FC = () => {
     setIsLoading(true);
     setError('');
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (email === 'test@example.com' && password === 'password') {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
+        
+        // Record visit
+        try {
+          await fetch('http://localhost:8080/api/visitors/record', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `userEmail=${encodeURIComponent(email)}`,
+          });
+        } catch (error) {
+          console.error('Failed to record visit:', error);
+        }
+        
         navigate('/dashboard');
       } else {
         setError('Invalid email or password');
