@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import jinImage from '../jin.jpeg';
 
@@ -15,10 +15,25 @@ const Login: React.FC = () => {
     setIsLoading(true);
     setError('');
 
-    setTimeout(async () => {
-      if (email === 'test@example.com' && password === 'password') {
+    try {
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
         localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userName', data.name);
+        localStorage.setItem('userId', data.id.toString());
         
         // Record visit
         try {
@@ -27,7 +42,7 @@ const Login: React.FC = () => {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `userEmail=${encodeURIComponent(email)}`,
+            body: `userEmail=${encodeURIComponent(data.email)}`,
           });
         } catch (error) {
           console.error('Failed to record visit:', error);
@@ -35,10 +50,13 @@ const Login: React.FC = () => {
         
         navigate('/dashboard');
       } else {
-        setError('Invalid email or password');
+        setError(data.error || 'Invalid email or password');
       }
+    } catch (err) {
+      setError('Network error. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const containerStyle = {
@@ -93,7 +111,7 @@ const Login: React.FC = () => {
         </form>
         
         <div className="login-footer">
-          <p>Don't have an account? <a href="/register">Sign up</a></p>
+          <p>Don't have an account? <Link to="/register" className="link">Sign up</Link></p>
           <p><a href="/forgot-password">Forgot password?</a></p>
         </div>
         

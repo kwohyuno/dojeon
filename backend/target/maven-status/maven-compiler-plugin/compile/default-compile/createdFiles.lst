@@ -1,13 +1,17 @@
+com/dojeon/backend/controller/UserController.class
+com/dojeon/backend/model/User.class
 com/dojeon/backend/controller/PostController.class
 com/dojeon/backend/model/Comment.class
 com/dojeon/backend/controller/VisitorController.class
 com/dojeon/backend/BackendApplication.class
 com/dojeon/backend/service/ConcertService.class
+com/dojeon/backend/service/UserService.class
 com/dojeon/backend/repository/ConcertRepository.class
 com/dojeon/backend/repository/CommentRepository.class
 com/dojeon/backend/repository/PostRepository.class
 com/dojeon/backend/controller/CommentController.class
 com/dojeon/backend/model/Post.class
+com/dojeon/backend/repository/UserRepository.class
 com/dojeon/backend/service/CommentService.class
 com/dojeon/backend/model/Visitor.class
 com/dojeon/backend/controller/ConcertController.class
