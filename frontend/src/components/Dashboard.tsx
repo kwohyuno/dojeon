@@ -29,6 +29,8 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
     minHeight: '100vh'
   };
 
+  const todayVisitors = 127;
+
   return (
     <div className="dashboard-container" style={containerStyle}>
       <header className="dashboard-header">
@@ -47,6 +49,16 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
       </header>
       
       <main className="dashboard-main">
+        <div className="visitor-stats">
+          <div className="visitor-card">
+            <div className="visitor-icon">👥</div>
+            <div className="visitor-info">
+              <div className="visitor-number">{todayVisitors}</div>
+              <div className="visitor-label">Today's Visitors</div>
+            </div>
+          </div>
+        </div>
+        
         <PostList />
       </main>
     </div>
