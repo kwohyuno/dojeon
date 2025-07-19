@@ -30,7 +30,6 @@ public class PostController {
     public ResponseEntity<Post> getPostById(@PathVariable Long id) {
         Optional<Post> post = postService.getPostById(id);
         if (post.isPresent()) {
-            // Increment view count
             postService.incrementViewCount(id);
             return ResponseEntity.ok(post.get());
         } else {

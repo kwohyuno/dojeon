@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PostList.css';
+import jinImage from '../jin.jpeg';
 
 interface Post {
   id: number;
@@ -17,6 +18,24 @@ const PostList: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.body.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${jinImage})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.minHeight = '100vh';
+
+    return () => {
+      document.body.style.backgroundImage = '';
+      document.body.style.backgroundSize = '';
+      document.body.style.backgroundPosition = '';
+      document.body.style.backgroundRepeat = '';
+      document.body.style.backgroundAttachment = '';
+      document.body.style.minHeight = '';
+    };
+  }, []);
 
   useEffect(() => {
     fetchPosts();
@@ -42,10 +61,6 @@ const PostList: React.FC = () => {
     navigate(`/post/${postId}`);
   };
 
-  const handleWritePost = () => {
-    navigate('/write');
-  };
-
   if (loading) {
     return (
       <div className="post-list-container">
@@ -66,9 +81,6 @@ const PostList: React.FC = () => {
     <div className="post-list-container">
       <div className="post-list-header">
         <h1>Dojeon Community</h1>
-        <button onClick={handleWritePost} className="write-button">
-          Write Post
-        </button>
       </div>
 
       <div className="post-list">

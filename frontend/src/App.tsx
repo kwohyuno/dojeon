@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import PostList from './components/PostList';
 import PostDetail from './components/PostDetail';
 import MyPage from './components/MyPage';
 import Write from './components/Write';
@@ -22,14 +21,6 @@ function App() {
             element={
               <PrivateRoute>
                 <Dashboard userEmail={userEmail} />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/posts" 
-            element={
-              <PrivateRoute>
-                <PostList />
               </PrivateRoute>
             } 
           />

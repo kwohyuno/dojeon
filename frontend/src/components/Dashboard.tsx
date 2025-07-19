@@ -21,6 +21,10 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
     navigate('/mypage');
   };
 
+  const handleGoToWrite = () => {
+    navigate('/write');
+  };
+
   const containerStyle = {
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${jinImage})`,
     backgroundSize: 'cover',
@@ -57,6 +61,12 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
               <div className="visitor-label">Today's Visitors</div>
             </div>
           </div>
+        </div>
+        
+        <div className="dashboard-actions">
+          <button onClick={handleGoToWrite} className="action-button">
+            ✍️ Write Post
+          </button>
         </div>
         
         <PostList />
