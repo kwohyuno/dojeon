@@ -6,11 +6,18 @@ import jinImage from '../jin.jpeg';
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
   const userEmail = localStorage.getItem('userEmail');
+  const userName = localStorage.getItem('userName');
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
     navigate('/login');
+  };
+
+  const handleBack = () => {
+    navigate('/dashboard');
   };
 
   const handleGoToPosts = () => {
@@ -31,7 +38,10 @@ const MyPage: React.FC = () => {
         <div className="header-content">
           <h1>My Page</h1>
           <div className="user-info">
-            <span>Welcome, {userEmail}</span>
+            <span>Welcome, {userName}</span>
+            <button onClick={handleBack} className="back-button">
+              Back
+            </button>
             <button onClick={handleLogout} className="logout-button">
               Logout
             </button>
@@ -107,10 +117,8 @@ const MyPage: React.FC = () => {
           <div className="mypage-card">
             <h3>Quick Actions</h3>
             <div className="action-buttons">
-              <button onClick={handleGoToPosts} className="action-button">View Posts</button>
               <button className="action-button">Edit Profile</button>
               <button className="action-button">Change Password</button>
-              <button className="action-button">Settings</button>
             </div>
           </div>
         </div>
