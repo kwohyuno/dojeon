@@ -74,8 +74,7 @@ const Write: React.FC = () => {
       }
 
       const createdPost = await response.json();
-      alert('Post created successfully!');
-      navigate('/dashboard');
+      navigate(`/post/${createdPost.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while creating the post.');
     } finally {
