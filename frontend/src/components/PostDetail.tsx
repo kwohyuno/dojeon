@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import jinImage from '../jin.jpeg';
 import './PostDetail.css';
 
 interface Post {
@@ -56,12 +57,20 @@ Feel free to explore the platform and start contributing to our growing communit
     navigate('/dashboard');
   };
 
+  const containerStyle = {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${jinImage})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    minHeight: '100vh'
+  };
+
   if (!post) {
     return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div className="post-detail-container">
+    <div className="post-detail-container" style={containerStyle}>
       <div className="post-detail-header">
         <button onClick={handleBack} className="back-button">
           ← Back to Posts
