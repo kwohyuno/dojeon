@@ -3,28 +3,58 @@ import { useNavigate } from 'react-router-dom';
 import jinImage from '../jin.jpeg';
 import './Write.css';
 
+interface PostRequest {
+  title: string;
+  content: string;
+  author: string;
+}
+
 const Write: React.FC = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title.trim() || !content.trim()) {
-      alert('Please fill in both title and content.');
+      setError('Please fill in both title and content.');
       return;
     }
 
     setIsSubmitting(true);
+    setError(null);
     
-    // 임시로 1초 후 완료 처리 (나중에 API로 교체)
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const userEmail = localStorage.getItem('userEmail') || 'Anonymous';
+      const postData: PostRequest = {
+        title: title.trim(),
+        content: content.trim(),
+        author: userEmail
+      };
+
+      const response = await fetch('http://localhost:8080/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
+
+      const createdPost = await response.json();
       alert('Post created successfully!');
       navigate('/dashboard');
-    }, 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while creating the post.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -61,6 +91,12 @@ const Write: React.FC = () => {
       <main className="write-main">
         <div className="write-card">
           <form onSubmit={handleSubmit} className="write-form">
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
+            
             <div className="form-group">
               <label htmlFor="title" className="form-label">Title</label>
               <input
@@ -71,6 +107,7 @@ const Write: React.FC = () => {
                 className="form-input"
                 placeholder="Enter your post title..."
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -84,6 +121,7 @@ const Write: React.FC = () => {
                 placeholder="Write your post content here..."
                 rows={12}
                 required
+                disabled={isSubmitting}
               />
             </div>
 

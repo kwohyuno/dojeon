@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PostList.css';
 
@@ -7,60 +7,36 @@ interface Post {
   title: string;
   content: string;
   author: string;
-  date: string;
-  views: number;
-  likes: number;
+  createdAt: string;
+  viewCount: number;
+  likeCount: number;
 }
 
 const PostList: React.FC = () => {
   const navigate = useNavigate();
-  const [posts] = useState<Post[]>([
-    {
-      id: 1,
-      title: "Welcome to Dojeon Community!",
-      content: "This is our first post. Welcome everyone to our community.",
-      author: "Admin",
-      date: "2024-01-15",
-      views: 150,
-      likes: 25
-    },
-    {
-      id: 2,
-      title: "How to get started with React",
-      content: "Learn the basics of React development with this comprehensive guide.",
-      author: "Developer",
-      date: "2024-01-14",
-      views: 89,
-      likes: 12
-    },
-    {
-      id: 3,
-      title: "Spring Boot Backend Development",
-      content: "Building robust backend services with Spring Boot framework.",
-      author: "Backend Dev",
-      date: "2024-01-13",
-      views: 67,
-      likes: 8
-    },
-    {
-      id: 4,
-      title: "UI/UX Design Principles",
-      content: "Essential design principles for creating beautiful user interfaces.",
-      author: "Designer",
-      date: "2024-01-12",
-      views: 234,
-      likes: 45
-    },
-    {
-      id: 5,
-      title: "Database Optimization Tips",
-      content: "Best practices for optimizing your database performance.",
-      author: "DBA",
-      date: "2024-01-11",
-      views: 156,
-      likes: 32
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8080/api/posts');
+      if (!response.ok) {
+        throw new Error('Failed to fetch posts');
+      }
+      const data = await response.json();
+      setPosts(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   const handlePostClick = (postId: number) => {
     navigate(`/post/${postId}`);
@@ -69,6 +45,22 @@ const PostList: React.FC = () => {
   const handleWritePost = () => {
     navigate('/write');
   };
+
+  if (loading) {
+    return (
+      <div className="post-list-container">
+        <div className="loading">Loading posts...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="post-list-container">
+        <div className="error">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="post-list-container">
@@ -80,32 +72,44 @@ const PostList: React.FC = () => {
       </div>
 
       <div className="post-list">
-        {posts.map((post) => (
-          <div 
-            key={post.id} 
-            className="post-item"
-            onClick={() => handlePostClick(post.id)}
-          >
-            <div className="post-content">
-              <h3 className="post-title">{post.title}</h3>
-              <p className="post-excerpt">{post.content.substring(0, 100)}...</p>
-              <div className="post-meta">
-                <span className="post-author">by {post.author}</span>
-                <span className="post-date">{post.date}</span>
-              </div>
-            </div>
-            <div className="post-stats">
-              <div className="stat">
-                <span className="stat-icon">👁️</span>
-                <span className="stat-value">{post.views}</span>
-              </div>
-              <div className="stat">
-                <span className="stat-icon">❤️</span>
-                <span className="stat-value">{post.likes}</span>
-              </div>
-            </div>
+        {posts.length === 0 ? (
+          <div className="no-posts">
+            <p>No posts yet. Be the first to write a post!</p>
           </div>
-        ))}
+        ) : (
+          posts.map((post) => (
+            <div 
+              key={post.id} 
+              className="post-item"
+              onClick={() => handlePostClick(post.id)}
+            >
+              <div className="post-content">
+                <h3 className="post-title">{post.title}</h3>
+                <p className="post-excerpt">
+                  {post.content.length > 100 
+                    ? `${post.content.substring(0, 100)}...` 
+                    : post.content}
+                </p>
+                <div className="post-meta">
+                  <span className="post-author">by {post.author}</span>
+                  <span className="post-date">
+                    {new Date(post.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+              <div className="post-stats">
+                <div className="stat">
+                  <span className="stat-icon">👁️</span>
+                  <span className="stat-value">{post.viewCount}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-icon">❤️</span>
+                  <span className="stat-value">{post.likeCount}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

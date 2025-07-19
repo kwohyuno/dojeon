@@ -8,48 +8,59 @@ interface Post {
   title: string;
   content: string;
   author: string;
-  date: string;
-  views: number;
-  likes: number;
+  createdAt: string;
+  updatedAt: string;
+  viewCount: number;
+  likeCount: number;
 }
 
 const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    // 임시 데이터 - 나중에 API로 교체
-    const mockPost: Post = {
-      id: parseInt(id || '1'),
-      title: "Welcome to Dojeon Community!",
-      content: `This is our first post. Welcome everyone to our community.
-
-We're excited to have you here! This platform is designed to bring together developers, designers, and tech enthusiasts from around the world.
-
-Here's what you can do:
-- Share your knowledge and experiences
-- Ask questions and get help from the community
-- Discover new technologies and trends
-- Connect with like-minded individuals
-
-Feel free to explore the platform and start contributing to our growing community. Together, we can learn, grow, and build amazing things!`,
-      author: "Admin",
-      date: "2024-01-15",
-      views: 150,
-      likes: 25
-    };
-    setPost(mockPost);
+    if (id) {
+      fetchPost(parseInt(id));
+    }
   }, [id]);
 
-  const handleLike = () => {
-    if (post) {
-      setPost({
-        ...post,
-        likes: isLiked ? post.likes - 1 : post.likes + 1
-      });
-      setIsLiked(!isLiked);
+  const fetchPost = async (postId: number) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8080/api/posts/${postId}`);
+      if (!response.ok) {
+        throw new Error('Post not found');
+      }
+      const data = await response.json();
+      setPost(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!post) return;
+
+    try {
+      const url = `http://localhost:8080/api/posts/${post.id}/like`;
+      const method = isLiked ? 'DELETE' : 'POST';
+      
+      const response = await fetch(url, { method });
+      if (response.ok) {
+        setPost(prev => prev ? {
+          ...prev,
+          likeCount: isLiked ? prev.likeCount - 1 : prev.likeCount + 1
+        } : null);
+        setIsLiked(!isLiked);
+      }
+    } catch (err) {
+      console.error('Failed to update like:', err);
     }
   };
 
@@ -65,8 +76,20 @@ Feel free to explore the platform and start contributing to our growing communit
     minHeight: '100vh'
   };
 
-  if (!post) {
-    return <div className="loading">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="post-detail-container" style={containerStyle}>
+        <div className="loading">Loading post...</div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="post-detail-container" style={containerStyle}>
+        <div className="error">Error: {error || 'Post not found'}</div>
+      </div>
+    );
   }
 
   return (
@@ -83,15 +106,17 @@ Feel free to explore the platform and start contributing to our growing communit
           
           <div className="post-detail-meta">
             <span className="post-detail-author">by {post.author}</span>
-            <span className="post-detail-date">{post.date}</span>
+            <span className="post-detail-date">
+              {new Date(post.createdAt).toLocaleDateString()}
+            </span>
             <div className="post-detail-stats">
               <span className="stat">
                 <span className="stat-icon">👁️</span>
-                {post.views} views
+                {post.viewCount} views
               </span>
               <span className="stat">
                 <span className="stat-icon">❤️</span>
-                {post.likes} likes
+                {post.likeCount} likes
               </span>
             </div>
           </div>
@@ -109,7 +134,7 @@ Feel free to explore the platform and start contributing to our growing communit
               onClick={handleLike} 
               className={`like-button ${isLiked ? 'liked' : ''}`}
             >
-              {isLiked ? '❤️' : '🤍'} {post.likes} Likes
+              {isLiked ? '❤️' : '🤍'} {post.likeCount} Likes
             </button>
             <button className="share-button">
               📤 Share
