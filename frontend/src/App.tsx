@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import PostList from './components/PostList';
 import PostDetail from './components/PostDetail';
 import MyPage from './components/MyPage';
+import Write from './components/Write';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
@@ -45,6 +46,14 @@ function App() {
             element={
               <PrivateRoute>
                 <MyPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/write" 
+            element={
+              <PrivateRoute>
+                <Write />
               </PrivateRoute>
             } 
           />
