@@ -48,9 +48,10 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
         try {
-            // Set userEmail from author field for now
-            // In a real app, you'd get this from the authenticated user
-            if (post.getUserEmail() == null && post.getAuthor() != null) {
+            // userEmail is now sent from frontend
+            // In a real app, you'd get this from the authenticated user session
+            if (post.getUserEmail() == null) {
+                // Fallback to author if userEmail not provided
                 post.setUserEmail(post.getAuthor());
             }
             Post createdPost = postService.createPost(post);

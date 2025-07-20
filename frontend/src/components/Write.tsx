@@ -7,6 +7,7 @@ interface PostRequest {
   title: string;
   content: string;
   author: string;
+  userEmail: string;
   concertId?: number;
 }
 
@@ -54,10 +55,12 @@ const Write: React.FC = () => {
     
     try {
       const userEmail = localStorage.getItem('userEmail') || 'Anonymous';
+      const userName = localStorage.getItem('userName') || userEmail;
       const postData: PostRequest = {
         title: title.trim(),
         content: content.trim(),
-        author: userEmail,
+        author: userName,
+        userEmail: userEmail,
         concertId: selectedConcertId || undefined
       };
 
