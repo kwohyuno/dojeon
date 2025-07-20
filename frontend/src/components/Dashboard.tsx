@@ -125,7 +125,18 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
     <div className="dashboard-container" style={containerStyle}>
       <header className="dashboard-header">
         <div className="header-content">
-          <h1>Dojeon</h1>
+          <div className="header-left">
+            <h1>Dojeon</h1>
+            <div className="visitor-stats-header">
+              <div className="visitor-card-header">
+                <div className="visitor-icon-header">👥</div>
+                <div className="visitor-info-header">
+                  <div className="visitor-number-header">{todayVisitors}</div>
+                  <div className="visitor-label-header">Today's Visitors</div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="user-info">
             <span>Welcome, {userName || userEmail}</span>
             <button onClick={handleGoToMyPage} className="mypage-button">
@@ -139,15 +150,6 @@ const Dashboard: React.FC<DashboardProps> = ({ userEmail }) => {
       </header>
       
       <main className="dashboard-main">
-        <div className="visitor-stats">
-          <div className="visitor-card">
-            <div className="visitor-icon">👥</div>
-            <div className="visitor-info">
-              <div className="visitor-number">{todayVisitors}</div>
-              <div className="visitor-label">Today's Visitors</div>
-            </div>
-          </div>
-        </div>
         
         <div className="dashboard-controls">
           <div className="concert-selector">
