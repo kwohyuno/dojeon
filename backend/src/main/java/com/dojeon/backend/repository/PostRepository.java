@@ -41,4 +41,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     
     // Get posts by concert ID
     List<Post> findByConcertIdOrderByCreatedAtDesc(Long concertId);
+    
+    // Count posts by user email
+    long countByUserEmail(String userEmail);
+    
+    // Get recent posts by user email
+    List<Post> findTop3ByUserEmailOrderByCreatedAtDesc(String userEmail);
+    
+    // Get all posts by user email
+    List<Post> findByUserEmail(String userEmail);
 } 

@@ -23,6 +23,9 @@ public class Comment {
     @Column(name = "post_id", nullable = false)
     private Long postId;
     
+    @Column(name = "user_email")
+    private String userEmail;
+    
     // Default constructor
     public Comment() {
         this.createdAt = LocalDateTime.now();
@@ -75,5 +78,13 @@ public class Comment {
     
     public void setPostId(Long postId) {
         this.postId = postId;
+    }
+    
+    public String getUserEmail() {
+        return userEmail;
+    }
+    
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 } 

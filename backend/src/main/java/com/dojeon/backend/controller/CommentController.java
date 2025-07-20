@@ -29,6 +29,11 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         try {
+            // Set userEmail from author field for now
+            // In a real app, you'd get this from the authenticated user
+            if (comment.getUserEmail() == null && comment.getAuthor() != null) {
+                comment.setUserEmail(comment.getAuthor());
+            }
             Comment createdComment = commentService.createComment(comment);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
         } catch (Exception e) {

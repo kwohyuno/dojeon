@@ -14,4 +14,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     
     // Count comments by post ID
     long countByPostId(Long postId);
+    
+    // Count comments by user email
+    long countByUserEmail(String userEmail);
+    
+    // Get recent comments by user email
+    List<Comment> findTop3ByUserEmailOrderByCreatedAtDesc(String userEmail);
 } 

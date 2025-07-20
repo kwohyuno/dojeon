@@ -70,4 +70,43 @@ public class UserController {
         response.put("exists", exists);
         return ResponseEntity.ok(response);
     }
+    
+    // Get user profile for MyPage
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(@RequestParam String email) {
+        try {
+            UserService.UserProfile profile = userService.getUserProfile(email);
+            return ResponseEntity.ok(profile);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+    
+    // Get user statistics for MyPage
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getUserStatistics(@RequestParam String email) {
+        try {
+            UserService.UserStatistics statistics = userService.getUserStatistics(email);
+            return ResponseEntity.ok(statistics);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+    
+    // Get user activity for MyPage
+    @GetMapping("/activity")
+    public ResponseEntity<?> getUserActivity(@RequestParam String email) {
+        try {
+            UserService.UserActivity activity = userService.getUserActivity(email);
+            return ResponseEntity.ok(activity);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
 } 

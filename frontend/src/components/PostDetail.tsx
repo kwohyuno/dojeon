@@ -196,7 +196,7 @@ const PostDetail: React.FC = () => {
             ❤️ Like
           </button>
           <button onClick={() => navigate('/dashboard')} className="back-button">
-            ← Back to Dashboard
+            ← Back
           </button>
         </div>
 

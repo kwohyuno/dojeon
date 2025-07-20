@@ -35,6 +35,9 @@ public class Post {
     @Column(name = "concert_id")
     private Long concertId;
     
+    @Column(name = "user_email")
+    private String userEmail;
+    
     // Default constructor
     public Post() {
         this.createdAt = LocalDateTime.now();
@@ -121,6 +124,14 @@ public class Post {
     
     public void setConcertId(Long concertId) {
         this.concertId = concertId;
+    }
+    
+    public String getUserEmail() {
+        return userEmail;
+    }
+    
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
     @PreUpdate
