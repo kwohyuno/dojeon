@@ -162,7 +162,7 @@ const MyPage: React.FC = () => {
                 </div>
                 <div className="stat-item">
                   <span className="stat-number">{statistics?.commentCount || 0}</span>
-                  <span className="stat-label">Comments</span>
+                  <span className="stat-label">Comment</span>
                 </div>
               </div>
             </div>

@@ -5,6 +5,7 @@ com/dojeon/backend/service/UserService.class
 com/dojeon/backend/repository/CommentRepository.class
 com/dojeon/backend/repository/PostRepository.class
 com/dojeon/backend/service/UserService$UserActivity.class
+com/dojeon/backend/model/Like.class
 com/dojeon/backend/model/Visitor.class
 com/dojeon/backend/controller/ConcertController.class
 com/dojeon/backend/config/CorsConfig.class
@@ -15,7 +16,9 @@ com/dojeon/backend/model/Comment.class
 com/dojeon/backend/service/ConcertService.class
 com/dojeon/backend/repository/ConcertRepository.class
 com/dojeon/backend/service/UserService$UserStatistics.class
+com/dojeon/backend/repository/LikeRepository.class
 com/dojeon/backend/controller/CommentController.class
+com/dojeon/backend/service/LikeService.class
 com/dojeon/backend/model/Post.class
 com/dojeon/backend/repository/UserRepository.class
 com/dojeon/backend/service/CommentService.class

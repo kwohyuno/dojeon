@@ -20,6 +20,8 @@ const PostDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [commentLoading, setCommentLoading] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const currentIdRef = useRef<string | null>(null);
 
@@ -85,9 +87,31 @@ const PostDetail: React.FC = () => {
       }
     };
 
+    const checkLikeStatus = async () => {
+      try {
+        const userEmail = localStorage.getItem('userEmail');
+        if (!userEmail) return;
+        
+        const response = await fetch(`http://localhost:8080/api/posts/${id}/like/check?userEmail=${encodeURIComponent(userEmail)}`);
+        if (response.ok) {
+          const data = await response.json();
+          setHasLiked(data.hasLiked);
+          if (post) {
+            setPost((prevPost: any) => ({
+              ...prevPost,
+              likeCount: data.likeCount
+            }));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to check like status:', err);
+      }
+    };
+
     if (id) {
       fetchPost();
       fetchComments();
+      checkLikeStatus();
     }
 
     return () => {
@@ -105,24 +129,38 @@ const PostDetail: React.FC = () => {
   }, [id]);
 
   const handleLike = async () => {
-    if (!post) return;
+    if (!post || likeLoading) return;
     
+    setLikeLoading(true);
     try {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        alert('Please login to like posts');
+        return;
+      }
+      
       const response = await fetch(`http://localhost:8080/api/posts/${id}/like`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          userEmail: userEmail
+        }),
       });
 
       if (response.ok) {
+        const data = await response.json();
+        setHasLiked(data.isLiked);
         setPost((prevPost: any) => ({
           ...prevPost,
-          likeCount: prevPost.likeCount + 1
+          likeCount: data.likeCount
         }));
       }
     } catch (error) {
       console.error('Failed to like post:', error);
+    } finally {
+      setLikeLoading(false);
     }
   };
 
@@ -192,8 +230,12 @@ const PostDetail: React.FC = () => {
         </div>
         <div className="post-content">{post.content}</div>
         <div className="post-actions">
-          <button onClick={handleLike} className="like-button">
-            ❤️ Like
+          <button 
+            onClick={handleLike} 
+            className={`like-button ${hasLiked ? 'liked' : ''}`}
+            disabled={likeLoading}
+          >
+            {likeLoading ? '...' : hasLiked ? '❤️ Liked' : '🤍 Like'}
           </button>
           <button onClick={() => navigate('/dashboard')} className="back-button">
             ← Back
