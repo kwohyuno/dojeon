@@ -16,6 +16,7 @@
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/repository/ConcertRepository.java
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/repository/UserRepository.java
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/model/Visitor.java
+/Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/config/SecurityConfig.java
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/model/Concert.java
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/BackendApplication.java
 /Users/hyunohkwon/DOJEON/backend/src/main/java/com/dojeon/backend/model/Comment.java

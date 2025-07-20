@@ -5,6 +5,7 @@ import com.dojeon.backend.repository.UserRepository;
 import com.dojeon.backend.repository.PostRepository;
 import com.dojeon.backend.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,9 @@ public class UserService {
     @Autowired
     private CommentRepository commentRepository;
     
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    
     // Register new user
     @Transactional
     public User registerUser(User user) {
@@ -30,6 +34,11 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with this email already exists");
         }
+        
+        // Encrypt password before saving
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        
         return userRepository.save(user);
     }
     
@@ -46,7 +55,7 @@ public class UserService {
     // Validate user login
     public Optional<User> validateLogin(String email, String password) {
         return userRepository.findByEmail(email)
-                .filter(user -> user.getPassword().equals(password));
+                .filter(user -> passwordEncoder.matches(password, user.getPassword()));
     }
     
     // Get user statistics for MyPage
