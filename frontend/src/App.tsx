@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import PostDetail from './components/PostDetail';
 import MyPage from './components/MyPage';
 import Write from './components/Write';
+import MusicPlayer from './components/MusicPlayer';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
@@ -52,6 +53,7 @@ function App() {
           />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
+        <MusicPlayer />
       </div>
     </Router>
   );
