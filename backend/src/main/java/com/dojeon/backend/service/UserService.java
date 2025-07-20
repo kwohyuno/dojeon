@@ -90,6 +90,24 @@ public class UserService {
         return new UserActivity(recentPosts, recentComments);
     }
     
+    // Update user profile
+    @Transactional
+    public User updateProfile(String currentEmail, String newName, String newEmail) {
+        User user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Check if new email already exists (if email is being changed)
+        if (!currentEmail.equals(newEmail) && userRepository.existsByEmail(newEmail)) {
+            throw new RuntimeException("Email already exists");
+        }
+        
+        // Update user information
+        user.setName(newName);
+        user.setEmail(newEmail);
+        
+        return userRepository.save(user);
+    }
+    
     // Inner classes for MyPage data
     public static class UserStatistics {
         private final long postCount;

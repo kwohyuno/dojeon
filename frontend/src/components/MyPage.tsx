@@ -38,6 +38,13 @@ const MyPage: React.FC = () => {
   const [statistics, setStatistics] = useState<UserStatistics | null>(null);
   const [activity, setActivity] = useState<UserActivity | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    email: ''
+  });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
@@ -53,6 +60,64 @@ const MyPage: React.FC = () => {
 
   const handleGoToPosts = () => {
     navigate('/posts');
+  };
+
+  const handleEditProfile = () => {
+    setEditForm({
+      name: profile?.name || userName || '',
+      email: profile?.email || userEmail || ''
+    });
+    setShowEditModal(true);
+    setEditError('');
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditLoading(true);
+    setEditError('');
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/users/update-profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          newName: editForm.name,
+          newEmail: editForm.email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update localStorage
+        localStorage.setItem('userName', editForm.name);
+        localStorage.setItem('userEmail', editForm.email);
+        
+        // Update profile state
+        setProfile(prev => prev ? {
+          ...prev,
+          name: editForm.name,
+          email: editForm.email
+        } : null);
+        
+        setShowEditModal(false);
+        window.location.reload(); // Refresh to update all components
+      } else {
+        setEditError(data.error || 'Failed to update profile');
+      }
+    } catch (error) {
+      setEditError('Network error. Please try again.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleEditCancel = () => {
+    setShowEditModal(false);
+    setEditError('');
   };
 
   useEffect(() => {
@@ -207,13 +272,53 @@ const MyPage: React.FC = () => {
                       <div className="mypage-card">
               <h3>Quick Actions</h3>
               <div className="action-buttons">
-                <button className="action-button">Edit Profile</button>
-                <button className="action-button">Change Password</button>
+                <button className="action-button" onClick={handleEditProfile}>Edit Profile</button>
               </div>
             </div>
           </div>
         )}
       </main>
+
+      {showEditModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Edit Profile</h2>
+            <form onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label>Name:</label>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                  required
+                />
+              </div>
+              {editError && (
+                <div className="error-message">
+                  {editError}
+                </div>
+              )}
+              <div className="modal-actions">
+                <button type="submit" disabled={editLoading}>
+                  {editLoading ? 'Updating...' : 'Update Profile'}
+                </button>
+                <button type="button" onClick={handleEditCancel}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

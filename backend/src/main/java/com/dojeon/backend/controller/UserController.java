@@ -109,4 +109,28 @@ public class UserController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
+    
+    // Update user profile
+    @PutMapping("/update-profile")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> updateRequest) {
+        try {
+            String currentEmail = updateRequest.get("email");
+            String newName = updateRequest.get("newName");
+            String newEmail = updateRequest.get("newEmail");
+            
+            User updatedUser = userService.updateProfile(currentEmail, newName, newEmail);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", updatedUser.getId());
+            response.put("email", updatedUser.getEmail());
+            response.put("name", updatedUser.getName());
+            response.put("message", "Profile updated successfully");
+            
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
 } 

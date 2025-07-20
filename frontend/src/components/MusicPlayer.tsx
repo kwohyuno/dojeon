@@ -29,7 +29,18 @@ const MusicPlayer: React.FC = () => {
       artist: "BTS",
       src: "/music/bts-dynamite.mp3"
     },
-
+    {
+        id: 3,
+        title: "Butterfly",
+        artist: "BTS",
+        src: "/music/bts-butterfly.mp3"
+      },
+      {
+        id: 4,
+        title: "Run BTS",
+        artist: "BTS",
+        src: "/music/bts-runbts.mp3"
+      },
   ];
 
   useEffect(() => {
