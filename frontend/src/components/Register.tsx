@@ -187,6 +187,15 @@ const Register: React.FC = () => {
           >
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
+          
+          <button 
+            type="button" 
+            className="cancel-button"
+            onClick={() => navigate('/login')}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
         </form>
         
         <div className="login-link">
