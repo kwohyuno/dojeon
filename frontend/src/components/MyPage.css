@@ -260,9 +260,11 @@
     margin-bottom: 0.5rem;
   }
   
+  .user-info .back-button,
   .user-info .logout-button {
     padding: 6px 12px;
     font-size: 12px;
+    width: auto;
   }
   
   .action-buttons {
